@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
+       
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -50,6 +50,13 @@
 </head>
 
 <body>
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+  <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "520b2d5f86664cf0a7ac0efe617ac8a0"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>  
   <main>
     <form>
       <fieldset>
@@ -99,15 +106,15 @@
 	  // error handling
 	  // the first num can't be empty
 	  if(!firstNum){
-		throw new Error("The first number can not be empty");
+		throw new ArithmaticError("The first number can not be empty");
 	  }
 	  // the second num can't be empty
 	  if(!secondNum){
-		throw new Error("The second number can not be empty");
+		throw new ArithmaticError("The second number can not be empty");
 	  }
 	  // the second num can't be zero if the operation is division
-	  if(operator == `/`  && secondNum === 0){
-		throw new Error("0 can't be divided by");
+	  if(operator == '/'  && secondNum == 0){
+		throw new DivisionError("0 can't be divided by");
 	  }
 
 	  // catch errors when running the adding operation
@@ -219,9 +226,29 @@
 	// trigger a global error button
 	let but_trigGlobalErr = errorBtns.find(ele => ele.textContent === "Trigger a Global Error");
 	but_trigGlobalErr.addEventListener('click', function trigGlobalErr(){
-		console.log("An error will happen!");
 		console.log(somthingUndef);
 	});
+
+	// customized calculationError class
+	class ArithmaticError extends Error {
+		constructor(message) {
+			super(message);
+			this.name = "ArithmaticError";
+		}
+	}
+	
+	// customized DivisionError class  
+	class DivisionError extends ArithmaticError{
+		constructor(divisionMsg) {
+			super("Division failed: "+divisionMsg);
+			this.divisionMsg = divisionMsg;
+		}
+	}
+	
+	// Global error handler
+	window.onerror = (event, source, lineno, colno, error) => {
+		console.log("Oops unfortunately an error happened...");
+	};
   </script>
 </body>
 
